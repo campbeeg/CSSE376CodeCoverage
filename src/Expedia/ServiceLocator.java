@@ -44,6 +44,11 @@ public class ServiceLocator {
 		discounts.add(aDiscount);	
 	}
 	
+	public void ClearDiscount() 
+	{
+		discounts.clear();
+	}
+	
 	public void AddFlight(Flight aFlight)
 	{
 		flights.add(aFlight);	
