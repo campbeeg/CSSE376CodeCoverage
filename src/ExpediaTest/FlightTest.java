@@ -1,14 +1,9 @@
 package ExpediaTest;
 
-import static org.junit.Assert.*;
-
-import java.time.Instant;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
 
 import Expedia.*;
@@ -18,10 +13,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.easymock.EasyMock.createNiceMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
+import static org.easymock.EasyMock.*;
 
 public class FlightTest {
 	private Flight targetFlight;
@@ -79,12 +71,12 @@ public class FlightTest {
 	@Test
 	public void TestThatFlightDoesGetNumberOfPassengers() {
 
-		IDatabase mockDatabase = createNiceMock(IDatabase.class);
-
+		IDatabase mockDatabase = createMock(IDatabase.class);
 		List<String> values = new ArrayList<String>();
 		for (int i = 0; i < 50; i++)
 			values.add("Bob");
 		
+		replay(mockDatabase);
 		Date date = new Date();
 		LocalDateTime ldt = LocalDateTime.ofInstant(date.toInstant(),
 				ZoneId.systemDefault()).plusDays(1);
@@ -94,7 +86,7 @@ public class FlightTest {
 		mockDatabase.Passengers = values;
 		target.Database = mockDatabase;
 		Assert.assertEquals(50, target.NumberOfPassengers());
-
+		verify(mockDatabase);
 	}
 
 	@After
