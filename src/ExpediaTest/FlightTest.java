@@ -3,6 +3,10 @@ package ExpediaTest;
 import static org.junit.Assert.*;
 
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -14,16 +18,18 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.easymock.EasyMock.createNiceMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
+
 public class FlightTest {
 	private Flight targetFlight;
 	private final Date StartDate = new Date(2009, 11, 1);
 	private final Date EndDate = new Date(2009, 11, 30);
 
-	// private MockRepository mocks;
-
 	@Before
 	public void TestInitialize() {
-		// mocks = new MockRepository();
 		targetFlight = new Flight(StartDate, EndDate, 0);
 	}
 
@@ -70,20 +76,26 @@ public class FlightTest {
 		Assert.assertEquals(300, target.getBasePrice(), 0.0001);
 	}
 
-	/*
-	 * @Test public void TestThatFlightDoesGetNumberOfPassengers() { var
-	 * mockDatabase = mocks.StrictMock<IDatabase>();
-	 * 
-	 * var values = new List<String>(); for(var i = 0; i < 50; i++)
-	 * values.Add("Bob");
-	 * 
-	 * Expect.Call(mockDatabase.Passengers).Return(values); mocks.ReplayAll();
-	 * 
-	 * var target = new Flight(Date.Now, Date.Now.AddDays(1), 0);
-	 * 
-	 * target.Database = mockDatabase; Assert.AreEqual(50,
-	 * target.NumberOfPassengers); }
-	 */
+	@Test
+	public void TestThatFlightDoesGetNumberOfPassengers() {
+
+		IDatabase mockDatabase = createNiceMock(IDatabase.class);
+
+		List<String> values = new ArrayList<String>();
+		for (int i = 0; i < 50; i++)
+			values.add("Bob");
+		
+		Date date = new Date();
+		LocalDateTime ldt = LocalDateTime.ofInstant(date.toInstant(),
+				ZoneId.systemDefault()).plusDays(1);
+		Flight target = new Flight(date, Date.from(ldt.atZone(
+				ZoneId.systemDefault()).toInstant()), 0);
+		
+		mockDatabase.Passengers = values;
+		target.Database = mockDatabase;
+		Assert.assertEquals(50, target.NumberOfPassengers());
+
+	}
 
 	@After
 	public void TearDown() {
